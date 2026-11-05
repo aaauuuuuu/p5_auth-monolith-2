@@ -6,5 +6,6 @@ return [
     AppServiceProvider::class,
     App\Providers\AppServiceProvider::class,
     Modules\Auth\Providers\AuthServiceProvider::class,
-    Modules\Products\Providers\ProductServiceProvider::class, // Pastikan ini ada
+    Modules\Products\Providers\ProductServiceProvider::class,
+    Modules\Library\Providers\LibraryServiceProvider::class,
 ];

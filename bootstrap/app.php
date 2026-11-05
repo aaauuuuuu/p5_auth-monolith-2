@@ -12,19 +12,28 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'role' => \Modules\Auth\Middleware\RoleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
-        $exceptions->render(function (\Modules\Products\Exceptions\InsufficientStockException $e,
-        $request) {
-        return $e->render($request);
+
+        // Handler untuk InsufficientStockException (Modul Produk)
+        $exceptions->render(function (\Modules\Products\Exceptions\InsufficientStockException $e, $request) {
+            return $e->render($request);
+        });
+
+        // Handler untuk BookNotAvailableException (Modul Library)
+        $exceptions->render(function (\Modules\Library\Exceptions\BookNotAvailableException $e, $request) {
+            return $e->render($request);
+        });
+
+        // Handler untuk AuthorHasBooksException (Modul Library)
+        $exceptions->render(function (\Modules\Library\Exceptions\AuthorHasBooksException $e, $request) {
+            return $e->render($request);
         });
     })
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'role' => \Modules\Auth\Middleware\RoleMiddleware::class,
-        ]);
-    })->create();
+    ->create();
